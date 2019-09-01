@@ -6,9 +6,10 @@
 #' @param TxDb A \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object. Required if \code{genomicRegions} is not provided. It must contain \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information.
 #' @param bins An ordered integer vector (must be greater equal that the length of \code{genomicRegions}), or 3 if the latter is not provided. The vector order determines the number of bins for each region. If more bins than regions are provided, the additional will be ignored.
 #' @param weightCol A single character string. This must be the name of an integer column in the \code{sampleObject} object.
-#' @param ignoreStrand When set to ‘TRUE’, the strand information in \code{sampleObject} is ignored. This does not affect the features in \code{genomicRegions}.
-#' @param collapse When set to ‘TRUE’, the profiles are collapsed into a single profile.
-#' @param verbose When set to ‘TRUE’, the function prints diagnostic messages.
+#' @param ignoreStrand When set to 'TRUE', the strand information in \code{sampleObject} is ignored. This does not affect the features in \code{genomicRegions}.
+#' @param dropEmpty When set to 'TRUE', the transcripts with no signal in any of their sub-regions will be discarded. When set to 'FALSE', all values of these regions will be set to 0.
+#' @param collapse When set to 'TRUE', the profiles are collapsed into a single profile.
+#' @param verbose When set to 'TRUE', the function prints diagnostic messages.
 #' @return A \code{\link[data.table:data.table-class]{data.table}} of the normalised binned coverage across the genomic features. Column names are determined by \code{collapse}.
 #'
 #' @import IRanges
@@ -43,7 +44,7 @@
 #'    scale_x_continuous("Relative position") +
 #'    scale_y_continuous("Average normalised signal")
 
-profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, bins=c(10, 100, 100), TxDb=NULL, weightCol=NULL, ignoreStrand=FALSE, collapse=TRUE, verbose=TRUE){
+profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, bins=c(10, 100, 100), TxDb=NULL, weightCol=NULL, ignoreStrand=FALSE, dropEmpty=TRUE, collapse=TRUE, verbose=TRUE){
 
         stopifnot( !is.null(genomicRegions) | !is.null(TxDb) )
         stopifnot( !is.null(genomicRegions) & length(genomicRegions)<=length(bins) ) # Early call
@@ -129,6 +130,8 @@ profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, bins=
 
         profiles = profiles[, list(region_id, strand, bin, value = value/sum(value)), by="gene_id"]
 
+        if( !dropEmpty )
+            profiles[!is.finite(value), value := 0]
         profiles = profiles[is.finite(value),]
 
         profiles[, region_id := factor(region_id, levels=names(genomicRegions))]

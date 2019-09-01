@@ -7,13 +7,14 @@
 #' @param TxDb A \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object. Required if \code{genicRegions} or \code{tx2gene} are not provided. It must contain \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information.
 #' @param bins An ordered integer vector (must be greater equal that the length of \code{genicRegions}). The vector order determines the number of bins for each region. If more bins than regions are provided, the additional will be ignored.
 #' @param weightCol A single character string. This must be the name of an integer column in the \code{sampleObject} object.
-#' @param ignoreStrand When set to ‘TRUE’, the strand information in \code{sampleObject} is ignored. This does not affect the features in \code{genicRegions}.
+#' @param ignoreStrand When set to 'TRUE', the strand information in \code{sampleObject} is ignored. This does not affect the features in \code{genicRegions}.
+#' @param dropEmpty When set to 'TRUE', the transcripts with no signal in any of their sub-regions will be discarded. When set to 'FALSE', all values of these regions will be set to 0.
 #' @param collapseBy A character string indicating which summarising method to use. One of "region" (default), "gene", "transcript", "recursive": can be abbreviated.
 #'      Profiles are always calculated per transcript (tx_id), and reported as such when this parameter is set to 'transcript'.
 #'      When set to 'gene', profiles are collapsed (using sum, mean and sd) by gene_id, while with 'region' they are collapsed in the same way but by region_id.
 #'      When set to 'recursive', profiles are first collapse by gene_id and then by region_id, and sum, mean (pooled) and sd (pooled) are reported. 
 #'      Please, be aware that each method will result in a different output, as the number and names of the columns by the chosen method.
-#' @param verbose When set to ‘TRUE’, the function prints diagnostic messages.
+#' @param verbose When set to 'TRUE', the function prints diagnostic messages.
 #' @return A \code{\link[data.table:data.table-class]{data.table}} of the normalised binned coverage across the genic features. Names and number of columns are determined by \code{collapseBy}.
 #'
 #' @import IRanges
@@ -48,7 +49,7 @@
 #'    scale_x_continuous("Relative position") +
 #'    scale_y_continuous("Average normalised signal")
 
-profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, bins=c(20, 100, 70, 100), TxDb=NULL, tx2gene=NULL, weightCol=NULL, ignoreStrand=FALSE, collapseBy=c("region", "gene", "transcript", "recursive"), verbose=TRUE){
+profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, bins=c(20, 100, 70, 100), TxDb=NULL, tx2gene=NULL, weightCol=NULL, ignoreStrand=FALSE, dropEmpty=TRUE, collapseBy=c("region", "gene", "transcript", "recursive"), verbose=TRUE){
 
         stopifnot( !is.null(genicRegions) | !is.null(TxDb) )
         stopifnot( !is.null(genicRegions) & length(genicRegions)<=length(bins) ) # Early call
@@ -148,6 +149,8 @@ profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, bins=c(20
 
         profiles = profiles[, list(region_id, strand, bin, value = value/sum(value)), by=c("gene_id", "tx_id")]
 
+        if( !dropEmpty )
+            profiles[!is.finite(value), value := 0]
         profiles = profiles[is.finite(value),]
 
         profiles[, region_id := factor(region_id, levels=names(genicRegions))]

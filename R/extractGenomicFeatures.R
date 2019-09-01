@@ -3,11 +3,11 @@
 #' This function extracts and filters gene, upstream and downstream features from a \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object.
 #' @param TxDb A \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object. It must contain \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information.
 #' @param selectGn A vector of optional gene identifiers to keep.
-#' @param excludeIntrons When set to ‘TRUE’, the extraction of intronic regions is skipped.
+#' @param excludeIntrons When set to 'TRUE', the extraction of intronic regions is skipped.
 #' @param body_width A positive integer. It determines the minumum gene body width.
 #' @param upstream_width A positive integer. It determines the upstream region width.
 #' @param downstream_width A positive integer. It determines the downstream gene body width.
-#' @param verbose When set to ‘TRUE’, the function prints diagnostic messages.
+#' @param verbose When set to 'TRUE', the function prints diagnostic messages.
 #' @return A named list of \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges}} objects.
 #'
 #' @import IRanges

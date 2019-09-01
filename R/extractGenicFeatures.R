@@ -5,9 +5,9 @@
 #' @param tx2gene A \code{"\linkS4class{data.frame}"} object. The first column must be of transcript identifiers, while the second must be of gene identifiers. Additional columns will be discarded.
 #' @param selectGn A vector of optional gene identifiers to keep.
 #' @param selectTx A vector of optional transcript identifiers to keep.
-#' @param excludeIntrons When set to ‘TRUE’, the extraction of intronic regions is skipped.
+#' @param excludeIntrons When set to 'TRUE', the extraction of intronic regions is skipped.
 #' @param bins A 4 integers ordered vector. The vector order determines the 5'UTR, CDS, 3'UTR and Introns minumum region widths.
-#' @param verbose When set to ‘TRUE’, the function prints diagnostic messages.
+#' @param verbose When set to 'TRUE', the function prints diagnostic messages.
 #' @return A named list of \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges}} objects.
 #'
 #' @import IRanges
