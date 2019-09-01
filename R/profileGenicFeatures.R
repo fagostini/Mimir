@@ -22,7 +22,7 @@
 #' @import GenomeInfoDb
 #' @import GenomicRanges
 #' @import GenomicFeatures
-#' @import data.table
+#' @importFrom data.table ":=" ".N" ".GRP" ".I" data.table as.data.table setkey setkeyv setnames rbindlist
 #' @importFrom stats setNames
 #' @export
 #' @examples
@@ -129,9 +129,9 @@ profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, bins=c(20
                             tmp_std[, value := as.numeric(value)]
                             tmp_std[, value := value/(max(pos)/nbin), by=c("gene_id", "tx_id")] # Normalise by transcript bin width
                             tmp_std = tmp_std[, list(value = sum(value)), by=c("gene_id", "tx_id", "bin")]
-                            tmp_std[, norm := value/sum(value), by=c("gene_id", "tx_id")] # Normalise by transcript total count
-
-                            tmp_std = tmp_std[!is.na(norm),]
+                            
+                            # tmp_std[, norm := value/sum(value), by=c("gene_id", "tx_id")] # Normalise by transcript total count
+                            # tmp_std = tmp_std[!is.na(norm),]
                         }
                         return(tmp_std)
                     })
@@ -147,6 +147,8 @@ profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, bins=c(20
         profiles = rbindlist(profiles, idcol="region_id")
 
         profiles = profiles[, list(region_id, strand, bin, value = value/sum(value)), by=c("gene_id", "tx_id")]
+
+        profiles[, region_id := factor(region_id, levels=names(genicRegions))]
 
         switch(collapseBy,
              region = profiles[,

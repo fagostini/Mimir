@@ -2,7 +2,7 @@
 % Please edit documentation in R/extractGenicFeatures.R
 \name{extractGenicFeatures}
 \alias{extractGenicFeatures}
-\title{Generate a list of genic feature GRangesList objects}
+\title{Generate a list of genic features GRangesList objects}
 \usage{
 extractGenicFeatures(TxDb = NULL, tx2gene = NULL, selectGn = NULL,
   selectTx = NULL, excludeIntrons = TRUE, bins = c(20, 100, 70, 100),
@@ -17,7 +17,7 @@ extractGenicFeatures(TxDb = NULL, tx2gene = NULL, selectGn = NULL,
 
 \item{selectTx}{A vector of optional transcript identifiers to keep.}
 
-\item{excludeIntrons}{When set to ‘TRUE’, the extraction of intronic regions is be skipped.}
+\item{excludeIntrons}{When set to ‘TRUE’, the extraction of intronic regions is skipped.}
 
 \item{bins}{A 4 integers ordered vector. The vector order determines the 5'UTR, CDS, 3'UTR and Introns minumum region widths.}
 
