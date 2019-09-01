@@ -5,8 +5,9 @@
 \title{Calculate metadata profiles across genic features}
 \usage{
 profileGenicFeatures(genicRegions = NULL, sampleObject = NULL,
-  bins = c(20, 100, 70, 100), TxDb = NULL, tx2gene = NULL,
-  weightCol = NULL, ignoreStrand = FALSE, collapseBy = c("region",
+  TxDb = NULL, tx2gene = NULL, bins = c(20, 100, 70, 100),
+  weightCol = NULL, ignoreStrand = FALSE, dropEmpty = TRUE,
+  normType = c("density", "max", "none"), collapseBy = c("region",
   "gene", "transcript", "recursive"), verbose = TRUE)
 }
 \arguments{
@@ -14,15 +15,20 @@ profileGenicFeatures(genicRegions = NULL, sampleObject = NULL,
 
 \item{sampleObject}{A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}} or \code{\link[GenomicAlignments:GAlignments-class]{GenomicAlignments}} object.}
 
-\item{bins}{An ordered integer vector (must be greater equal that the length of \code{genicRegions}). The vector order determines the number of bins for each region. If more bins than regions are provided, the additional will be ignored.}
-
 \item{TxDb}{A \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object. Required if \code{genicRegions} or \code{tx2gene} are not provided. It must contain \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information.}
 
 \item{tx2gene}{A \code{"\linkS4class{data.frame}"} object. The first column must be of transcript identifiers, while the second must be of gene identifiers. Additional columns will be discarded.}
 
+\item{bins}{An ordered integer vector (must be greater equal that the length of \code{genicRegions}). The vector order determines the number of bins for each region. If more bins than regions are provided, the additional will be ignored.}
+
 \item{weightCol}{A single character string. This must be the name of an integer column in the \code{sampleObject} object.}
 
-\item{ignoreStrand}{When set to ‘TRUE’, the strand information in \code{sampleObject} is ignored. This does not affect the features in \code{genicRegions}.}
+\item{ignoreStrand}{When set to 'TRUE', the strand information in \code{sampleObject} is ignored. This does not affect the features in \code{genicRegions}.}
+
+\item{dropEmpty}{When set to 'TRUE', the transcripts with no signal in any of their sub-regions will be discarded. When set to 'FALSE', all values of these regions will be set to 0.}
+
+\item{normType}{A character string indicating which region normalising method to use. One of 'density' (default), 'max', 'none': can be abbreviated.
+Depending on the chosen method the values of each region are normalised using the sum ('density'), the maximum ('max') of the values across the region, or not normalised at all ('none').}
 
 \item{collapseBy}{A character string indicating which summarising method to use. One of "region" (default), "gene", "transcript", "recursive": can be abbreviated.
 Profiles are always calculated per transcript (tx_id), and reported as such when this parameter is set to 'transcript'.
@@ -30,7 +36,7 @@ When set to 'gene', profiles are collapsed (using sum, mean and sd) by gene_id, 
 When set to 'recursive', profiles are first collapse by gene_id and then by region_id, and sum, mean (pooled) and sd (pooled) are reported. 
 Please, be aware that each method will result in a different output, as the number and names of the columns by the chosen method.}
 
-\item{verbose}{When set to ‘TRUE’, the function prints diagnostic messages.}
+\item{verbose}{When set to 'TRUE', the function prints diagnostic messages.}
 }
 \value{
 A \code{\link[data.table:data.table-class]{data.table}} of the normalised binned coverage across the genic features. Names and number of columns are determined by \code{collapseBy}.

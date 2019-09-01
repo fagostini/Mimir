@@ -17,11 +17,11 @@ extractGenicFeatures(TxDb = NULL, tx2gene = NULL, selectGn = NULL,
 
 \item{selectTx}{A vector of optional transcript identifiers to keep.}
 
-\item{excludeIntrons}{When set to ‘TRUE’, the extraction of intronic regions is skipped.}
+\item{excludeIntrons}{When set to 'TRUE', the extraction of intronic regions is skipped.}
 
 \item{bins}{A 4 integers ordered vector. The vector order determines the 5'UTR, CDS, 3'UTR and Introns minumum region widths.}
 
-\item{verbose}{When set to ‘TRUE’, the function prints diagnostic messages.}
+\item{verbose}{When set to 'TRUE', the function prints diagnostic messages.}
 }
 \value{
 A named list of \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges}} objects.

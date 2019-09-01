@@ -5,7 +5,7 @@
 \title{Generate a list of genomic features GRangesList objects}
 \usage{
 extractGenomicFeatures(TxDb = NULL, selectGn = NULL,
-  excludeIntrons = TRUE, body_width = 1000, upstream_width = 100,
+  excludeIntrons = TRUE, body_width = 1000, upstream_width = 500,
   downstream_width = 1000, verbose = TRUE)
 }
 \arguments{
@@ -13,7 +13,7 @@ extractGenomicFeatures(TxDb = NULL, selectGn = NULL,
 
 \item{selectGn}{A vector of optional gene identifiers to keep.}
 
-\item{excludeIntrons}{When set to ‘TRUE’, the extraction of intronic regions is skipped.}
+\item{excludeIntrons}{When set to 'TRUE', the extraction of intronic regions is skipped.}
 
 \item{body_width}{A positive integer. It determines the minumum gene body width.}
 
@@ -21,7 +21,7 @@ extractGenomicFeatures(TxDb = NULL, selectGn = NULL,
 
 \item{downstream_width}{A positive integer. It determines the downstream gene body width.}
 
-\item{verbose}{When set to ‘TRUE’, the function prints diagnostic messages.}
+\item{verbose}{When set to 'TRUE', the function prints diagnostic messages.}
 }
 \value{
 A named list of \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges}} objects.
