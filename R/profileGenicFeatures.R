@@ -148,7 +148,7 @@ profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, bins=c(20
 
         profiles = profiles[, list(region_id, strand, bin, value = value/sum(value)), by=c("gene_id", "tx_id")]
 
-        profiles = profiles[!is.finite(value),]
+        profiles = profiles[is.finite(value),]
 
         profiles[, region_id := factor(region_id, levels=names(genicRegions))]
 
