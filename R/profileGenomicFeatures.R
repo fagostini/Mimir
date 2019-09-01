@@ -8,6 +8,8 @@
 #' @param weightCol A single character string. This must be the name of an integer column in the \code{sampleObject} object.
 #' @param ignoreStrand When set to 'TRUE', the strand information in \code{sampleObject} is ignored. This does not affect the features in \code{genomicRegions}.
 #' @param dropEmpty When set to 'TRUE', the transcripts with no signal in any of their sub-regions will be discarded. When set to 'FALSE', all values of these regions will be set to 0.
+#' @param normType A character string indicating which region normalising method to use. One of 'density' (default), 'max', 'none': can be abbreviated.
+#'      Depending on the chosen method the values of each region are normalised using the sum ('density'), the maximum ('max') of the values across the region, or not normalised at all ('none').
 #' @param collapse When set to 'TRUE', the profiles are collapsed into a single profile.
 #' @param verbose When set to 'TRUE', the function prints diagnostic messages.
 #' @return A \code{\link[data.table:data.table-class]{data.table}} of the normalised binned coverage across the genomic features. Column names are determined by \code{collapse}.
@@ -44,12 +46,16 @@
 #'    scale_x_continuous("Relative position") +
 #'    scale_y_continuous("Average normalised signal")
 
-profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, bins=c(10, 100, 100), TxDb=NULL, weightCol=NULL, ignoreStrand=FALSE, dropEmpty=TRUE, collapse=TRUE, verbose=TRUE){
+profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, TxDb=NULL,
+    bins=c(10, 100, 100), weightCol=NULL, ignoreStrand=FALSE, dropEmpty=TRUE,
+    normType=c("density", "max", "none"), collapse=TRUE, verbose=TRUE){
 
         stopifnot( !is.null(genomicRegions) | !is.null(TxDb) )
         stopifnot( !is.null(genomicRegions) & length(genomicRegions)<=length(bins) ) # Early call
         stopifnot( !is.null(weightCol)  & weightCol%in%colnames(mcols(sampleObject)) )
         stopifnot( !any(is.na(seqlengths(sampleObject))) | !is.null(TxDb) )
+
+        normType = match.arg(normType)
 
         if( is.null(genomicRegions) ){
             stopifnot( length(bins) == 3 )
@@ -128,7 +134,10 @@ profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, bins=
         names(profiles) = names(genomicRegions)
         profiles = rbindlist(profiles, idcol="region_id")
 
-        profiles = profiles[, list(region_id, strand, bin, value = value/sum(value)), by="gene_id"]
+        profiles = switch(normType,
+            density = profiles[, list(region_id, strand, bin, value = value/sum(value)), by="gene_id"],
+            max = profiles[, list(region_id, strand, bin, value = value/max(value)), by="gene_id"],
+            none = profiles[, list(region_id, strand, bin, value = value), by="gene_id"])
 
         if( !dropEmpty )
             profiles[!is.finite(value), value := 0]
