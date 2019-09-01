@@ -86,7 +86,7 @@ profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, bins=
                             region_std = sort(unlist(region[strand(region)==std,]))
                             region_std = GRangesList(split(region_std, names(region_std)))
                             if( verbose )
-                                message(paste(region_name, "regions on", std, " strand:", length(region_std)))
+                                message(paste(region_name, "regions on", std, "strand:", length(region_std)))
                             region_std = unlist(region_std, use.names=FALSE)
                             region_std$gene_id = names(region_std)
 
