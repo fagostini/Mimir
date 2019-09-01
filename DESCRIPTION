@@ -1,0 +1,28 @@
+Package: Mimir
+Version: 0.1
+Date: 2019-08-30
+Title: Metadata profiles for NGS data
+Authors@R: person("Federico", "Agostini",
+    email = "federico.agostini@scilifelab.se",
+    role = c("aut", "cre"))
+Maintainer: Federico Agostini <federico.agostini@scilifelab.se>
+Description: R package to create metadata profiles for CLIP and other types of NGS data.
+Depends: R (>= 3.6.0)
+Imports:
+    IRanges,
+    BiocGenerics,
+    S4Vectors,
+    GenomeInfoDb,
+    AnnotationDbi,
+    GenomicRanges,
+    GenomicFeatures,
+    data.table,
+    stats
+Suggests:
+    TxDb.Dmelanogaster.UCSC.dm3.ensGene,
+    pasillaBamSubset,
+    GenomicAlignments,
+    ggplot2
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 6.1.1
