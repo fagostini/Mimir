@@ -21,7 +21,7 @@
 #' 
 #' genomicRegions = extractGenomicFeatures(TxDb = TxDb.Dmelanogaster.UCSC.dm3.ensGene)
 
-extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE, body_width=1000, upstream_width=100, downstream_width=1000, verbose=TRUE){
+extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE, body_width=1000, upstream_width=500, downstream_width=1000, verbose=TRUE){
 
     # Check for required args
     stopifnot( !is.null(TxDb) )
@@ -53,7 +53,7 @@ extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE
     upstreams = reduce(split(upstreams, upstreams$gene_id))
     upstreams = flank(upstreams, width=upstream_width, start=TRUE, both=FALSE, use.names=TRUE)
     seqinfo(upstreams) = seqinfo(TxDb)
-    upstreams = keepStandardChromosomes(upstreams, pruning.mode="coarse")
+    upstreams = subsetByOverlaps(upstreams, as(seqinfo(TxDb), "GRanges"), type="within")
     if( verbose ) message(paste("Extracted", length(upstreams), "upstream regions"))
 
     # Extract downstream regions
@@ -62,7 +62,7 @@ extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE
     downstreams = reduce(split(downstreams, downstreams$gene_id))
     downstreams = flank(downstreams, width=downstream_width, start=FALSE, both=FALSE, use.names=TRUE)
     seqinfo(downstreams) = seqinfo(TxDb)
-    downstreams = keepStandardChromosomes(downstreams, pruning.mode="coarse")
+    downstreams = subsetByOverlaps(downstreams, as(seqinfo(TxDb), "GRanges"), type="within")
     if( verbose ) message(paste("Extracted", length(downstreams), "downstream regions"))
 
     genomicRegions = list(Upstream = upstreams, Gene_body = bodies, Downstream = downstreams)
