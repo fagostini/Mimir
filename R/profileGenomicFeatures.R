@@ -129,10 +129,12 @@ profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, bins=
 
         profiles = profiles[, list(region_id, strand, bin, value = value/sum(value)), by="gene_id"]
 
-        if( collapse )
-          profiles = profiles[, list(Sum = sum(value), Mean = mean(value), Sd = sd(value)), by=c("region_id", "bin")]
+        profiles = profiles[!is.finite(value),]
 
         profiles[, region_id := factor(region_id, levels=names(genomicRegions))]
+
+        if( collapse )
+          profiles = profiles[, list(Sum = sum(value), Mean = mean(value), Sd = sd(value)), by=c("region_id", "bin")]
 
         return(profiles)
 }
