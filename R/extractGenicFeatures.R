@@ -43,7 +43,7 @@ extractGenicFeatures <- function(TxDb=NULL, tx2gene=NULL, selectGn=NULL, selectT
         tx2gene = tx2gene[gene_id%in%selectGn,]
     }
     # Select by transcript
-    if( !is.null(selectGn) ){
+    if( !is.null(selectTx) ){
         tx2gene = tx2gene[tx_id%in%selectTx,]
     }
 
