@@ -21,10 +21,12 @@
 #' 
 #' genicRegions = extractGenicFeatures(TxDb = TxDb.Dmelanogaster.UCSC.dm3.ensGene)
 
-extractGenicFeatures <- function(TxDb=NULL, tx2gene=NULL, selectGn=NULL, selectTx=NULL, excludeIntrons=TRUE, bins=c(20, 100, 70, 100), verbose=TRUE){
+extractGenicFeatures <- function(TxDb=NULL, tx2gene=NULL, selectGn=NULL, selectTx=NULL,
+    excludeIntrons=TRUE, bins=c(20, 100, 70, 100), verbose=TRUE){
 
     # Check for required args
-    stopifnot( !is.null(TxDb) & length(bins)==4 )
+    stopifnot( !is.null(TxDb) )
+    stopifnot( (length(bins)>=3 & excludeIntrons) | (length(bins)>=4 & !excludeIntrons) )
     seqlevelsStyle(TxDb) = "UCSC"
 
     # Generate transcript -> gene reference table

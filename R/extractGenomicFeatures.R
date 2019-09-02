@@ -21,7 +21,8 @@
 #' 
 #' genomicRegions = extractGenomicFeatures(TxDb = TxDb.Dmelanogaster.UCSC.dm3.ensGene)
 
-extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE, body_width=1000, upstream_width=500, downstream_width=1000, verbose=TRUE){
+extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE,
+    body_width=1000, upstream_width=500, downstream_width=1000, verbose=TRUE){
 
     # Check for required args
     stopifnot( !is.null(TxDb) )
