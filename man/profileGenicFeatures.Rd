@@ -60,10 +60,14 @@ profile = profileGenicFeatures(genicRegions=query, sampleObject=subject, TxDb=Tx
 
 library("ggplot2")
 
-ggplot(profile, aes(x=bin, y=Mean, col=region_id)) + 
-   geom_ribbon(aes(ymin=Mean-Sd, ymax=Mean+Sd, fill=region_id), alpha=0.5) +
-   geom_line() +
-   geom_vline(xintercept=c(20.5, 120.5), linetype="dashed") +
-   scale_x_continuous("Relative position") +
-   scale_y_continuous("Average normalised signal")
+ggplot(profile, aes(x=bin, y=Mean, colour=region_id)) + 
+  geom_line() +
+  geom_vline(xintercept=c(20.5, 120.5), linetype="dashed", colour="grey30") +
+  scale_x_continuous("Relative position",
+       breaks=c(10.5, 70.5, 155.5), label=c("5'-UTR", "CDS", "3'-UTR")) +
+  scale_y_continuous("Average normalised signal") +
+  coord_cartesian(xlim=c(0, 190)) +
+  theme_bw() +
+  theme(legend.position=c(0.9, 0.8), legend.background=element_blank()) +
+  guides(colour=guide_legend(title=""))
 }

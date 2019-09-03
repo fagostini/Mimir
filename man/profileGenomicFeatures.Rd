@@ -5,7 +5,7 @@
 \title{Calculate metadata profiles across genomic features}
 \usage{
 profileGenomicFeatures(genomicRegions = NULL, sampleObject = NULL,
-  TxDb = NULL, bins = c(10, 100, 100), weightCol = NULL,
+  TxDb = NULL, bins = c(50, 100, 100), weightCol = NULL,
   ignoreStrand = FALSE, dropEmpty = TRUE, normType = c("density",
   "max", "none"), collapse = TRUE, verbose = TRUE)
 }
@@ -53,10 +53,14 @@ profile = profileGenomicFeatures(genomicRegions=query, sampleObject=subject, TxD
 
 library("ggplot2")
 
-ggplot(profile, aes(x=bin, y=Mean, col=region_id)) + 
-   geom_ribbon(aes(ymin=Mean-Sd, ymax=Mean+Sd, fill=region_id), alpha=0.5) +
-   geom_line() +
-   geom_vline(xintercept=c(10.5, 110.5), linetype="dashed") +
-   scale_x_continuous("Relative position") +
-   scale_y_continuous("Average normalised signal")
+ggplot(profile, aes(x=bin, y=Mean, colour=region_id)) + 
+  geom_line() +
+  geom_vline(xintercept=c(50.5, 150.5), linetype="dashed", colour="grey30") +
+  scale_x_continuous("Relative position",
+       breaks=c(1, 50.5, 150.5, 250), label=c("-500", "TSS", "TES", "1000")) +
+  scale_y_continuous("Average normalised signal") +
+  coord_cartesian(xlim=c(0, 250)) +
+  theme_bw() +
+  theme(legend.position=c(0.9, 0.8), legend.background=element_blank()) +
+  guides(colour=guide_legend(title=""))
 }
