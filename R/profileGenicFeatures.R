@@ -111,39 +111,52 @@ profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, TxDb=NULL
                             region_std = GRangesList(split(region_std, names(region_std)))
                             if( verbose )
                                 message(paste(region_name, "regions on", std, "strand:", length(region_std)))
-                            region_std = unlist(region_std, use.names=FALSE)
-                            region_std$tx_id = names(region_std)
 
-                            region_dt = data.table(tx_id = region_std$tx_id)
-                            region_dt[, exon_index := .I]
-                            region_dt[, tx_index := .GRP, by="tx_id"]
-                            setkey(region_dt, tx_id)
-                            setkey(tx2gene, tx_id)
-                            region_dt[tx2gene, gene_id := gene_id]
-                            region_dt[, gene_index := .GRP, by="gene_id"]
-                            setkey(region_dt, exon_index)
+                            tmp_reg = lapply(seq(1, length(region_std), 1e3),
+                                function(rg) {
+                                    rg = as.numeric(as.character(rg))
+                                    sub = region_std[rg:min(rg + 1e3 - 1, length(region_std)),]
+                                    
+                                    sub_std = unlist(sub, use.names=FALSE)
+                                    sub_std$tx_id = names(sub_std)
 
-                            tmp_std = as.data.table(tmp_std[region_std], key="group")
-                            if( std=="+" ){
-                                tmp_std[, pos := 1:.N, by="group"]
-                            }else{
-                                tmp_std[, pos := .N:1, by="group"]
-                            }
-                            setkey(tmp_std, group)
+                                    sub_dt = data.table(tx_id = sub_std$tx_id)
+                                    sub_dt[, exon_index := .I]
+                                    sub_dt[, tx_index := .GRP, by="tx_id"]
+                                    setkey(sub_dt, tx_id)
+                                    setkey(tx2gene, tx_id)
+                                    sub_dt[tx2gene, gene_id := gene_id]
+                                    # sub_dt[, gene_index := .GRP, by="gene_id"]
+                                    setkey(sub_dt, exon_index)
 
-                            tmp_std = tmp_std[region_dt, nomatch=0]
-                            tmp_std = tmp_std[order(tx_index, group, pos)]
-                            tmp_std[, pos := 1:.N, by="tx_index"]
-                            tmp_std[, bin := findInterval(pos, seq(0.5, max(pos)+0.5, length.out=nbin+1)), by="tx_id"]
+                                    tmp_sub = as.data.table(tmp_std[sub_std])
+                                    tmp_sub[, group := group]
+                                    setkey(tmp_sub, group)
+                                    if( std=="+" ){
+                                        tmp_sub[, pos := 1:.N, by="group"]
+                                    }else{
+                                        tmp_sub[, pos := .N:1, by="group"]
+                                    }
+                                    setkey(tmp_sub, group)
 
-                            tmp_std[, value := as.numeric(value)]
-                            tmp_std[, value := value/(max(pos)/nbin), by=c("gene_id", "tx_id")] # Normalise by transcript bin width
-                            tmp_std = tmp_std[, list(value = sum(value)), by=c("gene_id", "tx_id", "bin")]
+                                    tmp_sub = tmp_sub[sub_dt, nomatch=0]
+                                    tmp_sub = tmp_sub[order(tx_index, group, pos)]
+                                    tmp_sub[, pos := 1:.N, by="tx_index"]
+                                    tmp_sub[, bin := findInterval(pos, seq(0.5, max(pos)+0.5, length.out=nbin+1)), by="tx_id"]
+
+                                    tmp_sub[, value := as.numeric(value)]
+                                    tmp_sub[, value := value/(max(pos)/nbin), by=c("gene_id", "tx_id")] # Normalise by transcript bin width
+                                    tmp_sub = tmp_sub[, list(value = sum(value)), by=c("gene_id", "tx_id", "bin")]
+                                    
+                                    return(tmp_sub)
+                                })
                             
-                            # tmp_std[, norm := value/sum(value), by=c("gene_id", "tx_id")] # Normalise by transcript total count
-                            # tmp_std = tmp_std[!is.na(norm),]
+                            tmp_reg = rbindlist(tmp_reg)
+
+                            return(tmp_reg)
+                        }else{
+                            return(NULL)
                         }
-                        return(tmp_std)
                     })
 
                 tmp_list = rbindlist(tmp_list, idcol="strand")
