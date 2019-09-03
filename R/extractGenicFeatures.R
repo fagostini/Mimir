@@ -82,7 +82,6 @@ extractGenicFeatures <- function(TxDb=NULL, tx2gene=NULL, selectGn=NULL, selectT
 
     if( !excludeIntrons ){
         # Extract intronic sequences
-        if( verbose ) message("Extracting Introns...")
         introns = intronsByTranscript(TxDb, use.names=TRUE) 
         introns = introns[names(introns)%in%tx2gene$tx_id]
         introns = introns[sum(width(introns))>=bins[4]]
