@@ -122,10 +122,12 @@ profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, TxDb=
                             tmp_std[, value := value/(max(pos)/nbin), by="gene_id"] # Normalise by gene bin width
                             tmp_std = tmp_std[, list(value = sum(value)), by=c("gene_id", "bin")]
                            
-                           #  tmp_std[, norm := value/sum(value), by="gene_id"] # Normalise by gene total count
-                           #  tmp_std = tmp_std[!is.na(norm),]
+                            #  tmp_std[, norm := value/sum(value), by="gene_id"] # Normalise by gene total count
+                            #  tmp_std = tmp_std[!is.na(norm),]
+                            return(tmp_std)
+                        }else{
+                            return(NULL)
                         }
-                        return(tmp_std)
                     })
 
                 tmp_list = rbindlist(tmp_list, idcol="strand")
