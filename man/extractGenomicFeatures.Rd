@@ -5,8 +5,8 @@
 \title{Generate a list of genomic features GRangesList objects}
 \usage{
 extractGenomicFeatures(TxDb = NULL, selectGn = NULL,
-  excludeIntrons = TRUE, body_width = 1000, upstream_width = 500,
-  downstream_width = 1000, verbose = TRUE)
+  excludeIntrons = TRUE, exon_width = 1000, intron_width = 1000,
+  upstream_width = 1000, downstream_width = 1000, verbose = TRUE)
 }
 \arguments{
 \item{TxDb}{A \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object. It must contain \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information.}
@@ -15,7 +15,9 @@ extractGenomicFeatures(TxDb = NULL, selectGn = NULL,
 
 \item{excludeIntrons}{When set to 'TRUE', the extraction of intronic regions is skipped.}
 
-\item{body_width}{A positive integer. It determines the minumum gene body width.}
+\item{exon_width}{A positive integer. It determines the minumum width for the sum of all exons in a gene.}
+
+\item{intron_width}{A positive integer. It determines the minumum width for the sum of all introns in a gene.}
 
 \item{upstream_width}{A positive integer. It determines the upstream region width.}
 

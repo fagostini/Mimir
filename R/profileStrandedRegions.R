@@ -26,7 +26,7 @@
 #' fl1 <- untreated1_chr4()
 #' subject = coverage(keepSeqlevels(readGAlignments(fl1), "chr4"))
 #'
-#' profile = profileRegions(query, subject)
+#' profile = profileStrandedRegions(query, subject)
 #' profile = profile[, list(value = mean(value)), by="bin"]
 #'
 #' library("ggplot2")
@@ -37,7 +37,7 @@
 #'   scale_y_continuous("Average normalised coverage") +
 #'   theme_bw()
    
-profileRegions <- function(query, subject, nbin=100) {
+profileStrandedRegions <- function(query, subject, nbin=100) {
 
       # If needed, convert the GRangesList to a GRanges object
       if( class(query)[1]%in%c("CompressedGRangesList", "GRangesList") ){

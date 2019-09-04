@@ -107,7 +107,7 @@ profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, TxDb=
                                     rg = as.numeric(as.character(rg))
                                     sub = region_std[rg:min(rg + 1e3 - 1, length(region_std)),]
                             
-                                    tmp_sub = profileRegions(sub, tmp_std, nbin=nbin)
+                                    tmp_sub = profileStrandedRegions(sub, tmp_std, nbin=nbin)
                             
                                     setnames(tmp_sub, "region_id", "gene_id")
 
