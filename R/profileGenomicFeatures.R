@@ -41,17 +41,17 @@
 #'
 #' ggplot(profile, aes(x=bin, y=Mean, colour=region_id)) + 
 #'   geom_line() +
-#'   geom_vline(xintercept=c(50.5, 150.5), linetype="dashed", colour="grey30") +
+#'   geom_vline(xintercept=c(100.5, 200.5), linetype="dashed", colour="grey30") +
 #'   scale_x_continuous("Relative position",
-#'        breaks=c(1, 50.5, 150.5, 250), label=c("-500", "TSS", "TES", "1000")) +
+#'        breaks=c(1, 100.5, 200.5, 300), label=c("-1000", "TSS", "TES", "1000")) +
 #'   scale_y_continuous("Average normalised signal") +
-#'   coord_cartesian(xlim=c(0, 250)) +
+#'   coord_cartesian(xlim=c(0, 300)) +
 #'   theme_bw() +
 #'   theme(legend.position=c(0.9, 0.8), legend.background=element_blank()) +
 #'   guides(colour=guide_legend(title=""))
 
 profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, TxDb=NULL,
-    bins=c(50, 100, 100), weightCol=NULL, ignoreStrand=FALSE, dropEmpty=TRUE,
+    bins=c(100, 100, 100, 100), weightCol=NULL, ignoreStrand=FALSE, dropEmpty=TRUE,
     normType=c("density", "max", "none"), collapse=TRUE, verbose=TRUE){
 
         stopifnot( !is.null(genomicRegions) | !is.null(TxDb) )

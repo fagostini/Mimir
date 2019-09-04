@@ -4,7 +4,8 @@
 #' @param TxDb A \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object. It must contain \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information.
 #' @param selectGn A vector of optional gene identifiers to keep.
 #' @param excludeIntrons When set to 'TRUE', the extraction of intronic regions is skipped.
-#' @param body_width A positive integer. It determines the minumum gene body width.
+#' @param exon_width A positive integer. It determines the minumum width for the sum of all exons in a gene.
+#' @param intron_width A positive integer. It determines the minumum width for the sum of all introns in a gene.
 #' @param upstream_width A positive integer. It determines the upstream region width.
 #' @param downstream_width A positive integer. It determines the downstream gene body width.
 #' @param verbose When set to 'TRUE', the function prints diagnostic messages.
@@ -22,7 +23,7 @@
 #' genomicRegions = extractGenomicFeatures(TxDb = TxDb.Dmelanogaster.UCSC.dm3.ensGene)
 
 extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE,
-    body_width=1000, upstream_width=500, downstream_width=1000, verbose=TRUE){
+    exon_width=1000, intron_width=1000, upstream_width=1000, downstream_width=1000, verbose=TRUE){
 
     # Check for required args
     stopifnot( !is.null(TxDb) )
@@ -31,25 +32,25 @@ extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE
 
     # Extract either whole genes or gene exons
     if( !excludeIntrons ){
-        bodies = genes(TxDb, columns="gene_id")
-        names(bodies) = NULL
-        bodies = reduce(split(bodies, bodies$gene_id))
+        exons = genes(TxDb, columns="gene_id")
+        names(exons) = NULL
+        exons = reduce(split(exons, exons$gene_id))
     }else{
-       bodies = reduce(exonsBy(TxDb, by="gene"))
+       exons = reduce(exonsBy(TxDb, by="gene"))
     }
 
-   bodies = bodies[sum(width(bodies))>=body_width]
-   seqinfo(bodies) = seqinfo(TxDb)
-   bodies = keepStandardChromosomes(bodies, pruning.mode="coarse")
+   exons = exons[sum(width(exons))>=exon_width]
+   seqinfo(exons) = seqinfo(TxDb)
+   exons = keepStandardChromosomes(exons, pruning.mode="coarse")
 
     # Select by gene
     if( !is.null(selectGn) ){
-         bodies = bodies[names(bodies)%in%selectGn]
+         exons = exons[names(exons)%in%selectGn]
     }
-    if( verbose ) message(paste("Extracted", length(bodies), "genes"))
+    if( verbose ) message(paste("Extracted", length(exons), "genes"))
 
     # Extract upstream regions
-    upstreams = genes(TxDb, columns="gene_id", filter=list(gene_id=names(bodies)))
+    upstreams = genes(TxDb, columns="gene_id", filter=list(gene_id=names(exons)))
     names(upstreams) = NULL
     upstreams = reduce(split(upstreams, upstreams$gene_id))
     upstreams = flank(upstreams, width=upstream_width, start=TRUE, both=FALSE, use.names=TRUE)
@@ -58,7 +59,7 @@ extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE
     if( verbose ) message(paste("Extracted", length(upstreams), "upstream regions"))
 
     # Extract downstream regions
-    downstreams = genes(TxDb, columns="gene_id", filter=list(gene_id=names(bodies)))
+    downstreams = genes(TxDb, columns="gene_id", filter=list(gene_id=names(exons)))
     names(downstreams) = NULL
     downstreams = reduce(split(downstreams, downstreams$gene_id))
     downstreams = flank(downstreams, width=downstream_width, start=FALSE, both=FALSE, use.names=TRUE)
@@ -66,7 +67,18 @@ extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE
     downstreams = subsetByOverlaps(downstreams, as(seqinfo(TxDb), "GRanges"), type="within")
     if( verbose ) message(paste("Extracted", length(downstreams), "downstream regions"))
 
-    genomicRegions = list(Upstream = upstreams, Gene_body = bodies, Downstream = downstreams)
+    genomicRegions = list(Upstream = upstreams,
+                          Exon = exons,
+                          Downstream = downstreams)
+
+    if( !excludeIntrons ){
+        introns = genes(TxDb)
+        introns = split(introns, names(introns))
+        introns = reduce(introns[names(exons)])
+        introns = setdiff(introns, exons)
+        introns = introns[sum(width(introns))>=introns_width]
+        genomicRegions = append(genomicRegions, list(Intron = introns))
+    }
 
     return(genomicRegions)
 }
