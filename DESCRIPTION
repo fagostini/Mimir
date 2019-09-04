@@ -9,6 +9,7 @@ Maintainer: Federico Agostini <federico.agostini@scilifelab.se>
 Description: R package to create metadata profiles for CLIP and other types of NGS data.
 Depends: R (>= 3.6.0)
 Imports:
+    methods,
     IRanges,
     BiocGenerics,
     S4Vectors,

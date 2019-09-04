@@ -22,7 +22,7 @@
 #' @import IRanges
 #' @import BiocGenerics
 #' @importFrom S4Vectors mcols
-#' @import GenomeInfoDb
+#' @importFrom GenomeInfoDb seqlevelsStyle keepStandardChromosomes 
 #' @import GenomicRanges
 #' @import GenomicFeatures
 #' @importFrom data.table ":=" ".N" ".GRP" ".I" data.table as.data.table setkey setkeyv setnames rbindlist
@@ -80,13 +80,13 @@ profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, TxDb=NULL
         }
         stopifnot( !is.null(genicRegions) & length(genicRegions)<=length(bins) ) # Late call
 
-        GenomeInfoDb::seqlevelsStyle(sampleObject) = "UCSC"
+        seqlevelsStyle(sampleObject) = "UCSC"
         sampleObject = sortSeqlevels(sampleObject)
-        if( any(is.na(seqlengths(sampleObject))) | any(!(seqlevels(GenomeInfoDb::keepStandardChromosomes(TxDb)) %in% seqlevels(sampleObject))) ){
-            sampleObject = GenomeInfoDb::keepStandardChromosomes(sampleObject, pruning.mode="coarse")
-            if(  length(seqlevels(sampleObject)) < length(seqlevels(GenomeInfoDb::keepStandardChromosomes(TxDb))) )
-                seqlevels(sampleObject) = seqlevels(GenomeInfoDb::keepStandardChromosomes(TxDb))
-            seqinfo(sampleObject) = seqinfo(GenomeInfoDb::keepStandardChromosomes(TxDb))
+        if( any(is.na(seqlengths(sampleObject))) | any(!(seqlevels(keepStandardChromosomes(TxDb)) %in% seqlevels(sampleObject))) ){
+            sampleObject = keepStandardChromosomes(sampleObject, pruning.mode="coarse")
+            if(  length(seqlevels(sampleObject)) < length(seqlevels(keepStandardChromosomes(TxDb))) )
+                seqlevels(sampleObject) = seqlevels(keepStandardChromosomes(TxDb))
+            seqinfo(sampleObject) = seqinfo(keepStandardChromosomes(TxDb))
         }
 
         profiles = lapply(seq_along(genicRegions),
@@ -103,9 +103,13 @@ profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, TxDb=NULL
 
                 tmp_list = lapply(setNames(c("+", "-"), c("Plus", "Minus")),
                     function(std){
-                        if( any(strand(tmp)==std) & any(any(strand(region)==std)) ){
-                            tmp_std = coverage(tmp[strand(tmp)==std,])
-
+                        if( any(any(strand(region)==std)) ){
+                            
+                            if( ignoreStrand ){
+                                tmp_std = coverage(tmp)
+                            }else{
+                                tmp_std = coverage(tmp[strand(tmp)==std,])
+                            }
                             # Sort regions (crucial for '-' strand)
                             region_std = sort(unlist(region[strand(region)==std,]))
                             region_std = GRangesList(split(region_std, names(region_std)))
@@ -117,37 +121,13 @@ profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, TxDb=NULL
                                     rg = as.numeric(as.character(rg))
                                     sub = region_std[rg:min(rg + 1e3 - 1, length(region_std)),]
                                     
-                                    sub_std = unlist(sub, use.names=FALSE)
-                                    sub_std$tx_id = names(sub_std)
-
-                                    sub_dt = data.table(tx_id = sub_std$tx_id)
-                                    sub_dt[, exon_index := .I]
-                                    sub_dt[, tx_index := .GRP, by="tx_id"]
-                                    setkey(sub_dt, tx_id)
-                                    setkey(tx2gene, tx_id)
-                                    sub_dt[tx2gene, gene_id := gene_id]
-                                    # sub_dt[, gene_index := .GRP, by="gene_id"]
-                                    setkey(sub_dt, exon_index)
-
-                                    tmp_sub = as.data.table(tmp_std[sub_std])
-                                    tmp_sub[, group := group]
-                                    setkey(tmp_sub, group)
-                                    if( std=="+" ){
-                                        tmp_sub[, pos := 1:.N, by="group"]
-                                    }else{
-                                        tmp_sub[, pos := .N:1, by="group"]
-                                    }
-                                    setkey(tmp_sub, group)
-
-                                    tmp_sub = tmp_sub[sub_dt, nomatch=0]
-                                    tmp_sub = tmp_sub[order(tx_index, group, pos)]
-                                    tmp_sub[, pos := 1:.N, by="tx_index"]
-                                    tmp_sub[, bin := findInterval(pos, seq(0.5, max(pos)+0.5, length.out=nbin+1)), by="tx_id"]
-
-                                    tmp_sub[, value := as.numeric(value)]
-                                    tmp_sub[, value := value/(max(pos)/nbin), by=c("gene_id", "tx_id")] # Normalise by transcript bin width
-                                    tmp_sub = tmp_sub[, list(value = sum(value)), by=c("gene_id", "tx_id", "bin")]
+                                    tmp_sub = profileRegions(sub, tmp_std, nbin=nbin)
                                     
+                                    setnames(tmp_sub, "region_id", "tx_id")
+                                    setkey(tmp_sub, tx_id)
+                                    setkey(tx2gene, tx_id)
+                                    tmp_sub[tx2gene, gene_id := gene_id]
+
                                     return(tmp_sub)
                                 })
                             
