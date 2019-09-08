@@ -76,7 +76,7 @@ extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE
         introns = split(introns, names(introns))
         introns = reduce(introns[names(exons)])
         introns = setdiff(introns, exons)
-        introns = introns[sum(width(introns))>=introns_width]
+        introns = introns[sum(width(introns))>=intron_width]
         genomicRegions = append(genomicRegions, list(Intron = introns))
     }
 
