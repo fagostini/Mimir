@@ -31,7 +31,7 @@ extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE
 
 
     # Extract either whole genes or gene exons
-    if( !excludeIntrons ){
+    if( excludeIntrons ){
         exons = genes(TxDb, columns="gene_id")
         names(exons) = NULL
         exons = reduce(split(exons, exons$gene_id))
@@ -47,7 +47,7 @@ extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE
     if( !is.null(selectGn) ){
          exons = exons[names(exons)%in%selectGn]
     }
-    if( verbose ) message(paste("Extracted", length(exons), "genes"))
+    if( verbose ) message(paste("Extracted", length(exons), "exonic regions"))
 
     # Extract upstream regions
     upstreams = genes(TxDb, columns="gene_id", filter=list(gene_id=names(exons)))
@@ -77,6 +77,7 @@ extractGenomicFeatures <- function(TxDb=NULL, selectGn=NULL, excludeIntrons=TRUE
         introns = reduce(introns[names(exons)])
         introns = setdiff(introns, exons)
         introns = introns[sum(width(introns))>=intron_width]
+        if( verbose ) message(paste("Extracted", length(downstreams), "intronic regions"))
         genomicRegions = append(genomicRegions, list(Intron = introns))
     }
 

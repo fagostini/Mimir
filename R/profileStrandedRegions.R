@@ -45,7 +45,7 @@ profileStrandedRegions <- function(query, subject, nbin=100) {
             names(query) = paste("region", seq_along(query), sep="_")
          }
          subset_stranded = unlist(query, use.names=FALSE)
-         # Note: The next line slows down a lot the execution
+         # Note: Although is only a check, the line below slows down a lot the execution
          names(subset_stranded) = rep(names(query), sapply(query, length))
       }else if( class(query)[1]%in%c("GenomicRanges", "GRanges") ){
          if( is.null(names(query)) )
