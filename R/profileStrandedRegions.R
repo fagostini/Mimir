@@ -17,8 +17,8 @@
 #' TxDb = TxDb.Dmelanogaster.UCSC.dm3.ensGene
 #' 
 #' query = keepSeqlevels(exonsBy(TxDb, by="tx", use.names=TRUE), "chr4", pruning.mode="coarse")
-#' query = unlist(query[strand(query)=="+"])
-#' query = split(query, names(query))
+#' query = query[strand(query)=="+"]
+#' query = query[sum(width(query))>0]
 #'
 #' library("pasillaBamSubset")
 #' library("GenomicAlignments")
@@ -45,14 +45,18 @@ profileStrandedRegions <- function(query, subject, nbin=100) {
             names(query) = paste("region", seq_along(query), sep="_")
          }
          subset_stranded = unlist(query, use.names=FALSE)
-         # Note: Although is only a check, the line below slows down a lot the execution
-         names(subset_stranded) = rep(names(query), sapply(query, length))
+         if( is.null(names(subset_stranded)) ){
+            subset_stranded = unlist(query, use.names=TRUE)
+         }else{
+            # Note: Although is only a check, the line below slows down a lot the execution
+            names(subset_stranded) = rep(names(query), sapply(query, length))
+         }
       }else if( class(query)[1]%in%c("GenomicRanges", "GRanges") ){
          if( is.null(names(query)) )
             paste("region", seq_along(query), sep="_")    
          subset_stranded = query
       }else{
-         stop("Not a GRanges or GRangesList object")
+         stop("Query is not a GRanges or GRangesList object")
       }
       # Add Region identifiers
       subset_stranded$region_id = names(subset_stranded)

@@ -97,8 +97,8 @@ profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, TxDb=
                                 tmp_std = coverage(tmp[strand(tmp)==std,])
                             }
                             # Sort regions (crucial for '-' strand)
-                            region_std = sort(unlist(region[strand(region)==std,]))
-                            region_std = GRangesList(split(region_std, names(region_std)))
+                            region_std = region[strand(region)==std,]
+                            region_std = sort(region_std[sum(width(region_std))>0,])
                             if( verbose )
                                 message(paste(region_name, "regions on", std, "strand:", length(region_std)))
 
