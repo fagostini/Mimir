@@ -16,7 +16,7 @@ profileGenomicFeatures(genomicRegions = NULL, sampleObject = NULL,
 
 \item{TxDb}{A \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object. Required if \code{genomicRegions} is not provided. It must contain \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information.}
 
-\item{bins}{An ordered integer vector (must be greater equal that the length of \code{genomicRegions}), or 3 if the latter is not provided. The vector order determines the number of bins for each region. If more bins than regions are provided, the additional will be ignored.}
+\item{bins}{An ordered integer vector (must be greater equal that the length of \code{genomicRegions}), or 3 if the latter is not provided. The vector order determines the number of bins for each region. If more bins than regions are provided, the additional will be ignored. Default order: Upstream, Exon, Downstream, Intron.}
 
 \item{weightCol}{A single character string. This must be the name of an integer column in the \code{sampleObject} object.}
 

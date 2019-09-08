@@ -6,8 +6,8 @@
 #' @param excludeIntrons When set to 'TRUE', the extraction of intronic regions is skipped.
 #' @param exon_width A positive integer. It determines the minumum width for the sum of all exons in a gene.
 #' @param intron_width A positive integer. It determines the minumum width for the sum of all introns in a gene.
-#' @param upstream_width A positive integer. It determines the upstream region width.
-#' @param downstream_width A positive integer. It determines the downstream gene body width.
+#' @param upstream_width A positive integer. It determines the width of the upstream regions.
+#' @param downstream_width A positive integer. It determines the width of the downstream regions.
 #' @param verbose When set to 'TRUE', the function prints diagnostic messages.
 #' @return A named list of \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges}} objects.
 #'

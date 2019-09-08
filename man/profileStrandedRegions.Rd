@@ -24,8 +24,8 @@ library("TxDb.Dmelanogaster.UCSC.dm3.ensGene")
 TxDb = TxDb.Dmelanogaster.UCSC.dm3.ensGene
 
 query = keepSeqlevels(exonsBy(TxDb, by="tx", use.names=TRUE), "chr4", pruning.mode="coarse")
-query = unlist(query[strand(query)=="+"])
-query = split(query, names(query))
+query = query[strand(query)=="+"]
+query = query[sum(width(query))>0]
 
 library("pasillaBamSubset")
 library("GenomicAlignments")

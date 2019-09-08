@@ -2,6 +2,7 @@
 
 export(extractGenicFeatures)
 export(extractGenomicFeatures)
+export(profileFixedFeatures)
 export(profileGenicFeatures)
 export(profileGenomicFeatures)
 export(profileStrandedRegions)

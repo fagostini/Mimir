@@ -19,7 +19,7 @@ profileGenicFeatures(genicRegions = NULL, sampleObject = NULL,
 
 \item{tx2gene}{A \code{"\linkS4class{data.frame}"} object. The first column must be of transcript identifiers, while the second must be of gene identifiers. Additional columns will be discarded.}
 
-\item{bins}{An ordered integer vector (must be greater equal that the length of \code{genicRegions}). The vector order determines the number of bins for each region. If more bins than regions are provided, the additional will be ignored.}
+\item{bins}{An ordered integer vector (must be greater equal that the length of \code{genicRegions}). The vector order determines the number of bins for each region. If more bins than regions are provided, the additional will be ignored.  Default order: 5'UTR, CDS, 3'UTR, Intron.}
 
 \item{weightCol}{A single character string. This must be the name of an integer column in the \code{sampleObject} object.}
 

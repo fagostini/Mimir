@@ -19,9 +19,9 @@ extractGenomicFeatures(TxDb = NULL, selectGn = NULL,
 
 \item{intron_width}{A positive integer. It determines the minumum width for the sum of all introns in a gene.}
 
-\item{upstream_width}{A positive integer. It determines the upstream region width.}
+\item{upstream_width}{A positive integer. It determines the width of the upstream regions.}
 
-\item{downstream_width}{A positive integer. It determines the downstream gene body width.}
+\item{downstream_width}{A positive integer. It determines the width of the downstream regions.}
 
 \item{verbose}{When set to 'TRUE', the function prints diagnostic messages.}
 }

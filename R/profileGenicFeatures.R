@@ -5,7 +5,7 @@
 #' @param sampleObject A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}} or \code{\link[GenomicAlignments:GAlignments-class]{GenomicAlignments}} object.
 #' @param TxDb A \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object. Required if \code{genicRegions} or \code{tx2gene} are not provided. It must contain \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information.
 #' @param tx2gene A \code{"\linkS4class{data.frame}"} object. The first column must be of transcript identifiers, while the second must be of gene identifiers. Additional columns will be discarded.
-#' @param bins An ordered integer vector (must be greater equal that the length of \code{genicRegions}). The vector order determines the number of bins for each region. If more bins than regions are provided, the additional will be ignored.
+#' @param bins An ordered integer vector (must be greater equal that the length of \code{genicRegions}). The vector order determines the number of bins for each region. If more bins than regions are provided, the additional will be ignored.  Default order: 5'UTR, CDS, 3'UTR, Intron.
 #' @param weightCol A single character string. This must be the name of an integer column in the \code{sampleObject} object.
 #' @param ignoreStrand When set to 'TRUE', the strand information in \code{sampleObject} is ignored. This does not affect the features in \code{genicRegions}.
 #' @param dropEmpty When set to 'TRUE', the transcripts with no signal in any of their sub-regions will be discarded. When set to 'FALSE', all values of these regions will be set to 0.
