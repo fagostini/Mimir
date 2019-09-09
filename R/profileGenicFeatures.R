@@ -80,14 +80,7 @@ profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, TxDb=NULL
         }
         stopifnot( !is.null(genicRegions) & length(genicRegions)<=length(bins) ) # Late call
 
-        seqlevelsStyle(sampleObject) = "UCSC"
-        sampleObject = sortSeqlevels(sampleObject)
-        if( any(is.na(seqlengths(sampleObject))) | any(!(seqlevels(keepStandardChromosomes(TxDb)) %in% seqlevels(sampleObject))) ){
-            sampleObject = keepStandardChromosomes(sampleObject, pruning.mode="coarse")
-            if(  length(seqlevels(sampleObject)) < length(seqlevels(keepStandardChromosomes(TxDb))) )
-                seqlevels(sampleObject) = seqlevels(keepStandardChromosomes(TxDb))
-            seqinfo(sampleObject) = seqinfo(keepStandardChromosomes(TxDb))
-        }
+        sampleObject = fixSeqInfo(sampleObject, TxDb=TxDb, method="txdb")[[1]]
 
         profiles = lapply(seq_along(genicRegions),
             function(i){
@@ -150,18 +143,18 @@ profileGenicFeatures <- function(genicRegions=NULL, sampleObject=NULL, TxDb=NULL
         profiles = rbindlist(profiles, idcol="region_id")
 
         profiles = switch(normType,
-            density = profiles[, list(region_id, strand, bin, value = value/sum(value)), by=c("gene_id", "tx_id")],
-            max = profiles[, list(region_id, strand, bin, value = value/max(value)), by=c("gene_id", "tx_id")],
-            none = profiles[, list(region_id, strand, bin, value = value), by=c("gene_id", "tx_id")])
+            density = profiles[, list(region_id, strand, bin, total = sum(value), value = value/sum(value)), by=c("gene_id", "tx_id")],
+            max = profiles[, list(region_id, strand, bin, total = sum(value), value = value/max(value)), by=c("gene_id", "tx_id")],
+            none = profiles[, list(region_id, strand, bin, total = sum(value), value = value), by=c("gene_id", "tx_id")])
 
-        if( !dropEmpty )
-            profiles[!is.finite(value), value := 0]
-        profiles = profiles[is.finite(value),]
+        if( dropEmpty )
+            profiles = profiles[total>0,]
+        profiles[!is.finite(value), value := 0]
 
         profiles[, region_id := factor(region_id, levels=names(genicRegions))]
 
         switch(collapseBy,
-             region = profiles[,
+            region = profiles[,
                             list(Sum = sum(value), Mean = mean(value), Sd = sd(value)), by=c("region_id", "bin")],
             gene = profiles[,
                             list(Sum = sum(value), Mean = mean(value), Sd = sd(value)), by=c("region_id", "bin", "gene_id")],

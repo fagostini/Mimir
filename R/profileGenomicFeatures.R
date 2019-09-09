@@ -66,14 +66,7 @@ profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, TxDb=
             genomicRegions = extractGenomicFeatures(TxDb, upstream_width=bins[1], exon_width=bins[2], downstream_width=bins[3], intron_width=bins[4])
         }
 
-        seqlevelsStyle(sampleObject) = "UCSC"
-        sampleObject = sortSeqlevels(sampleObject)
-        if( any(is.na(seqlengths(sampleObject))) | any(!(seqlevels(keepStandardChromosomes(TxDb)) %in% seqlevels(sampleObject))) ){
-            sampleObject = keepStandardChromosomes(sampleObject, pruning.mode="coarse")
-            if(  length(seqlevels(sampleObject)) < length(seqlevels(keepStandardChromosomes(TxDb))) )
-                seqlevels(sampleObject) = seqlevels(keepStandardChromosomes(TxDb))
-            seqinfo(sampleObject) = seqinfo(keepStandardChromosomes(TxDb))
-        }
+        sampleObject = fixSeqInfo(sampleObject, TxDb=TxDb, method="txdb")[[1]]
 
         profiles = lapply(seq_along(genomicRegions),
             function(i){
@@ -133,13 +126,13 @@ profileGenomicFeatures <- function(genomicRegions=NULL, sampleObject=NULL, TxDb=
         profiles = rbindlist(profiles, idcol="region_id")
 
         profiles = switch(normType,
-            density = profiles[, list(region_id, strand, bin, value = value/sum(value)), by="gene_id"],
-            max = profiles[, list(region_id, strand, bin, value = value/max(value)), by="gene_id"],
-            none = profiles[, list(region_id, strand, bin, value = value), by="gene_id"])
+            density = profiles[, list(region_id, strand, bin, total = sum(value), value = value/sum(value)), by="gene_id"],
+            max = profiles[, list(region_id, strand, bin, total = sum(value), value = value/max(value)), by="gene_id"],
+            none = profiles[, list(region_id, strand, bin, total = sum(value), value = value), by="gene_id"])
 
-        if( !dropEmpty )
-            profiles[!is.finite(value), value := 0]
-        profiles = profiles[is.finite(value),]
+        if( dropEmpty )
+            profiles = profiles[total>0,]
+        profiles[!is.finite(value), value := 0]
 
         profiles[, region_id := factor(region_id, levels=names(genomicRegions))]
 
