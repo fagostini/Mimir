@@ -11,6 +11,7 @@
 #' @param verbose When set to 'TRUE', the function prints diagnostic messages.
 #' @return A named list of \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges}} objects.
 #'
+#' @importFrom methods as
 #' @import IRanges
 #' @import BiocGenerics
 #' @import GenomeInfoDb
