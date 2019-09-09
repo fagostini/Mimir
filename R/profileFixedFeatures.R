@@ -1,6 +1,6 @@
 #' Calculate metadata profiles across fixed-width features
 #' 
-#' This function calculates metadata profiles across fixed-width features using a procedure similar to that used in \href{https://www.sciencedirect.com/science/article/pii/S1097276519303533?via%3Dihub#fig1}{Viphakone et al., 2019}.
+#' This function calculates metadata profiles across fixed-width features using a procedure similar to that used in (https://www.sciencedirect.com/science/article/pii/S1097276519303533?via%3Dihub#fig1)[Viphakone et al., 2019].
 #' @param fixedRegions A named \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges}} or list of \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges}} objects. The \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges}} width must be the same within the same group, but it can vary between groups.
 #' @param sampleObject A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}} or \code{\link[GenomicAlignments:GAlignments-class]{GenomicAlignments}} object.
 #' @param TxDb A \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object. Required if \code{fixedRegions} or \code{sampleObject} have missing \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information. It must contain \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information.
@@ -55,7 +55,7 @@ profileFixedFeatures <- function(fixedRegions=NULL, sampleObject=NULL, TxDb=NULL
 
         stopifnot( !is.null(fixedRegions) )
         stopifnot( !is.null(weightCol)  & weightCol%in%colnames(mcols(sampleObject)) )
-        stopifnot( (!any(is.na(seqlengths(fixedRegions))) & !any(is.na(seqlengths(sampleObject)))) & is.null(TxDb) )
+        stopifnot( (!any(is.na(seqlengths(fixedRegions))) & !any(is.na(seqlengths(sampleObject)))) & !is.null(TxDb) )
         if( class(fixedRegions)[1]%in%c("CompressedGRangesList", "GRangesList") ){
            stopifnot( length(fixedRegions) <= bins )
            for( i in seq_along(fixedRegions) )

@@ -35,7 +35,7 @@ Depending on the chosen method the values of each region are normalised using th
 A \code{\link[data.table:data.table-class]{data.table}} of the normalised binned coverage across the fixed features. Column names are determined by \code{collapse}.
 }
 \description{
-Calculate metadata profiles across fixed-width features
+This function calculates metadata profiles across fixed-width features using a procedure similar to that used in (https://www.sciencedirect.com/science/article/pii/S1097276519303533?via%3Dihub#fig1)[Viphakone et al., 2019].
 }
 \examples{
 library("TxDb.Dmelanogaster.UCSC.dm3.ensGene")

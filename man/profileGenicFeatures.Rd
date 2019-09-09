@@ -17,7 +17,7 @@ profileGenicFeatures(genicRegions = NULL, sampleObject = NULL,
 
 \item{TxDb}{A \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object. Required if \code{genicRegions} or \code{tx2gene} are not provided. It must contain \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information.}
 
-\item{tx2gene}{A \code{"\linkS4class{data.frame}"} object. The first column must be of transcript identifiers, while the second must be of gene identifiers. Additional columns will be discarded.}
+\item{tx2gene}{A \code{\linkS4class{data.frame}} object. The first column must be of transcript identifiers, while the second must be of gene identifiers. Additional columns will be discarded.}
 
 \item{bins}{An ordered integer vector (must be greater equal that the length of \code{genicRegions}). The vector order determines the number of bins for each region. If more bins than regions are provided, the additional will be ignored.  Default order: 5'UTR, CDS, 3'UTR, Intron.}
 
@@ -42,7 +42,7 @@ Please, be aware that each method will result in a different output, as the numb
 A \code{\link[data.table:data.table-class]{data.table}} of the normalised binned coverage across the genic features. Names and number of columns are determined by \code{collapseBy}.
 }
 \description{
-Calculate metadata profiles across genic features
+This function calculates metadata profiles across genic features using a procedure similar to that used in (https://www.sciencedirect.com/science/article/pii/S1097276519303533?via%3Dihub#fig1)[Viphakone et al., 2019].
 }
 \examples{
 library("TxDb.Dmelanogaster.UCSC.dm3.ensGene")

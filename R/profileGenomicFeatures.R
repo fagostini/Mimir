@@ -1,6 +1,6 @@
 #' Calculate metadata profiles across genomic features
 #' 
-#' This function calculates metadata profiles across genomic features using a procedure similar to that used in \href{https://www.sciencedirect.com/science/article/pii/S1097276519303533?via%3Dihub#fig1}{Viphakone et al., 2019}.
+#' This function calculates metadata profiles across genomic features using a procedure similar to that used in (https://www.sciencedirect.com/science/article/pii/S1097276519303533?via%3Dihub#fig1)[Viphakone et al., 2019].
 #' @param genomicRegions A named list of \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges}} objects.
 #' @param sampleObject A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}} or \code{\link[GenomicAlignments:GAlignments-class]{GenomicAlignments}} object.
 #' @param TxDb A \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures}} object. Required if \code{genomicRegions} is not provided. It must contain \code{\link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb}} information.
