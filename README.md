@@ -97,7 +97,7 @@ ggplot(profile, aes(x=bin, y=Mean, colour=region_id)) +
    guides(colour=guide_legend(title=""))
 ```
 
-![](img/example_profile.png)
+![](man/figures/example_profile.png)
 
 ## Authors
 
@@ -105,4 +105,4 @@ ggplot(profile, aes(x=bin, y=Mean, colour=region_id)) +
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
