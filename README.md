@@ -2,38 +2,36 @@
 
 R package to create metadata profiles for CLIP and other types of NGS data.
 
-## Table of Content
+### Table of Content
 
-- [Mimir package](#mimir-package)
-  - [Table of Content](#table-of-content)
-  - [Installation Instructions](#installation-instructions)
-    - [Prerequisities](#prerequisities)
-    - [Install Repository](#install-repository)
-    - [Install Package Release](#install-package-release)
-  - [Documentation](#documentation)
-    - [Basic Example](#basic-example)
-  - [Bugs and Issues](#bugs-and-issues)
-  - [License](#license)
+   - [Installation Instructions](#installation-instructions)
+      - [Prerequisities](#prerequisities)
+      - [Install Repository](#install-repository)
+      - [Install Package Release](#install-package-release)
+   - [Documentation](#documentation)
+      - [Basic Example](#basic-example)
+   - [Bugs and Issues](#bugs-and-issues)
+   - [License](#license)
 
 ## Installation Instructions
 
 ### Prerequisities
 
-[R](https://www.r-project.org/) (>=3.6.0) with a working version of [Bioconductor](https://www.bioconductor.org/).
+- [R](https://www.r-project.org/) (>=3.6.0) with a working version of [Bioconductor](https://www.bioconductor.org/).
 Although the package has not been tested with previous versions of R, it might still work.
 
-Required dependencies will be installed via _BiocManager:install()_.
+- Required dependencies will be installed via _BiocManager:install()_.
 
 ### Install Repository
 
-Install and load the _devtools_ package:
+- Install and load the _devtools_ package:
 
 ```
 install.packages("devtools")
 library(devtools)
 ```
 
-Install the [fagostini/Mimir](https://github.com/fagostini/Mimir) package:
+- Install the [fagostini/Mimir](https://github.com/fagostini/Mimir) package:
 
 ```
 install_github("fagostini/Mimir", type = "source", repos = BiocManager::repositories(), dependencies = TRUE)
@@ -41,7 +39,7 @@ install_github("fagostini/Mimir", type = "source", repos = BiocManager::reposito
 
 ### Install Package Release
 
-Download the latest source release from [here](https://github.com/fagostini/Mimir/releases) and install it:
+ - Download the latest source release from [here](https://github.com/fagostini/Mimir/releases) and install it:
 
 ```
 install.packages(path_to_file, type = "source", repos = BiocManager::repositories(), dependencies = TRUE)
@@ -49,7 +47,7 @@ install.packages(path_to_file, type = "source", repos = BiocManager::repositorie
 
 ## Documentation
 
-Coming soon...
+- Coming soon...
 
 ### Basic Example
 
