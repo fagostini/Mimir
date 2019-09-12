@@ -2,51 +2,70 @@
 
 R package to create metadata profiles for CLIP and other types of NGS data.
 
-## Getting Started
+## Table of Content
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+- [Mimir package](#mimir-package)
+  - [Table of Content](#table-of-content)
+  - [Installation Instructions](#installation-instructions)
+    - [Prerequisities](#prerequisities)
+    - [Install Repository](#install-repository)
+    - [Install Package Release](#install-package-release)
+  - [Documentation](#documentation)
+    - [Basic Example](#basic-example)
+  - [Bugs and Issues](#bugs-and-issues)
+  - [License](#license)
+
+## Installation Instructions
 
 ### Prerequisities
 
-A pre-installed version of [R](https://www.r-project.org/) (>= 3.6.0; it has not been tested on any previous version, but it might work), with a working version of [Bioconductor](https://www.bioconductor.org/).
+[R](https://www.r-project.org/) (>=3.6.0) with a working version of [Bioconductor](https://www.bioconductor.org/).
+Although the package has not been tested with previous versions of R, it might still work.
 
-Additional dependencies will be installed via BiocManager:install() 
+Required dependencies will be installed via _BiocManager:install()_.
 
-### Install
+### Install Repository
 
-__[Option 1]__ Use _install_github("author/package")_.
-
-Install the _devtools_ package and load it
+Install and load the _devtools_ package:
 
 ```
 install.packages("devtools")
 library(devtools)
 ```
 
-Install the [fagostini/Mimir](https://github.com/fagostini/Mimir) package with
+Install the [fagostini/Mimir](https://github.com/fagostini/Mimir) package:
 
 ```
 install_github("fagostini/Mimir", type = "source", repos = BiocManager::repositories(), dependencies = TRUE)
 ```
 
-__[Option 2]__ Use _install.packages()_
+### Install Package Release
 
-Download the source release from [here](https://github.com/fagostini/Mimir/releases) and install it with
+Download the latest source release from [here](https://github.com/fagostini/Mimir/releases) and install it:
 
 ```
 install.packages(path_to_file, type = "source", repos = BiocManager::repositories(), dependencies = TRUE)
 ```
 
-### Examples
+## Documentation
+
+Coming soon...
+
+### Basic Example
 
 This basic example shows how to extract the genomic features (_i.e._, the genes, with their upstream and downstream regions) from a TxDb object
 
 ```
+# Load the package
 library("Mimir")
 
+# Load a pre-compiled TxDb object
 library("TxDb.Dmelanogaster.UCSC.dm3.ensGene")
 
-query = extractGenomicFeatures(TxDb = TxDb.Dmelanogaster.UCSC.dm3.ensGene)
+txdb = TxDb.Dmelanogaster.UCSC.dm3.ensGene
+
+# Extract the genomic features
+query = extractGenomicFeatures(TxDb = txdb)
 ```
 
 > Extracted 10562 genes
@@ -58,6 +77,7 @@ query = extractGenomicFeatures(TxDb = TxDb.Dmelanogaster.UCSC.dm3.ensGene)
 Now that the regions have been extracted, the signal across these features can be calcualted
 
 ```
+# Load sample Bam files and packages to read them 
 library("GenomicAlignments")
 library("pasillaBamSubset")
 
@@ -65,7 +85,8 @@ library("pasillaBamSubset")
 fl1 <- untreated1_chr4()
 subject = readGAlignments(fl1)
 
-profile = profileGenomicFeatures(genomicRegions=query, sampleObject=subject, TxDb=TxDb.Dmelanogaster.UCSC.dm3.ensGene)
+# Create the profiles across the regions
+profile = profileGenomicFeatures(genomicRegions = query, sampleObject = subject, TxDb = txdb)
 ```
 
 > Upstream regions on + strand: 5261
@@ -83,8 +104,10 @@ profile = profileGenomicFeatures(genomicRegions=query, sampleObject=subject, TxD
 Finally, the profile obtained can be visualised
 
 ```
+# Load the plotting package
 library("ggplot2")
 
+# Plot the profiles
 ggplot(profile, aes(x=bin, y=Mean, colour=region_id)) + 
    geom_line() +
    geom_vline(xintercept=c(50.5, 150.5), linetype="dashed", colour="grey30") +
@@ -99,9 +122,13 @@ ggplot(profile, aes(x=bin, y=Mean, colour=region_id)) +
 
 ![](man/figures/example_profile.png)
 
-## Authors
+## Bugs and Issues
 
-* **Federico Agostini**
+Report bugs as issues on the [GitHub repository](https://github.com/fagostini/Mimir/issues)
+
+<!-- ## Author
+
+* [Federico Agostini](https://github.com/fagostini) -->
 
 ## License
 
